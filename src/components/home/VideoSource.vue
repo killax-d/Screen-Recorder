@@ -1,6 +1,6 @@
 <template>
 	<div class="text-center">
-		<v-bottom-sheet v-model="sheet">
+		<v-bottom-sheet v-model="sheet" inset>
 			<template v-slot:activator="{ on }">
 				<v-btn color="purple" dark v-on="on" @click="sources()">
 					{{ $t('video_source') }}

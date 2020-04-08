@@ -47,6 +47,7 @@
 
 <style scoped>
 	.drag {
+		z-index: 0;
 		position: absolute;
 		display: block;
 		content: "";
