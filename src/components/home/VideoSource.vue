@@ -11,7 +11,7 @@
 				<v-list-item
 				v-for="screen in videosSources.screens"
 				:key="screen.name"
-				@click="sheet = false; selectSource(screen.id)"
+				@click="sheet = false; $emit('sourceChange', screen.id)"
 				>
 					<v-icon x-large>mdi-monitor</v-icon>
 					<v-list-item-title>{{ screen.name }}</v-list-item-title>
@@ -41,7 +41,7 @@
 									<v-col v-for="(app, i) in videosSources.apps" :key="i" cols="12" md="6">
 										<v-item>
 											<v-card 
-												@click="dialog = false; selectSource(app.id)"
+												@click="dialog = false; $emit('sourceChange', app.id);"
 												style="cursor: pointer"
 											>
 												<v-img
@@ -73,21 +73,17 @@ import { writeFile } from 'fs';
 export default {
 	name: "VideoSource",
 
+	props: {
+		stream: MediaStream
+	},
+
 	data: () => ({
+		video: HTMLVideoElement,
 		sheet: false,
 		dialog: false,
 		videosSources: {
 			screens: [],
 			apps: []
-		},
-		constraints: {
-			audio: false,
-			video: {
-				mandatory: {
-					chromeMediaSource: 'desktop',
-					chromeMediaSourceId: undefined
-				}
-			}
 		},
 	}),
 
@@ -115,15 +111,33 @@ export default {
 				}
 			});
 		},
-		async selectSource(source) {
-			this.constraints.video.mandatory.chromeMediaSourceId = source;
 
-			const stream = await navigator.mediaDevices.getUserMedia(this.constraints);
-			const video = document.getElementById("preview");
-			video.srcObject = stream;
-			video.play();
-		},
+		playStream(stream) {
+			this.video.srcObject = stream;
+			this.video.play();
+		}
+	},
+
+	mounted() {
+		this.video = document.getElementById("preview");
+		if (this.stream) {
+			this.playStream(this.stream);
+		}
+	},
+
+	watch: { 
+		stream: function(oldStream, newStream) {
+			if (this.video) {
+				if (this.video.srcObject) {
+					this.video.pause();
+				}
+				if (oldStream) {
+					this.playStream(oldStream);
+				}
+			}
+		}
 	}
+ 
 }
 </script>
 

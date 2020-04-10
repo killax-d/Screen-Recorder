@@ -14,11 +14,15 @@
 				</v-list-item-action>
 			</v-list-item>
 
-			<v-list-item @click="exit">
+			<v-list-item @click="dialog=true">
 				<v-list-item-action>
 					<v-icon x-large>close</v-icon>
 				</v-list-item-action>
 			</v-list-item>
+
+			<v-container v-if="dialog">
+				<Close v-on:no="dialog=false"></Close>
+			</v-container>
 
 			<div class="drag"></div>
 		</v-list>
@@ -26,23 +30,19 @@
 </template>
 
 <script lang="ts">
-  import Vue from 'vue'
+import Vue from 'vue'
 
-  export default Vue.extend({
-    name: 'HelloWorld',
+import Close from '@/components/nav/Close.vue';
 
-    data: () => ({
-      //
-    }),
-    
-	methods: {
-		exit: () => {
-			const remote = require('electron').remote;
-			const win = remote.getCurrentWindow();
-			win.close();
-		},
-	},
-  })
+export default Vue.extend({
+	name: 'Menu',
+
+	components: { Close },
+
+	data: () => ({
+		dialog: false,
+	}),
+})
 </script>
 
 <style scoped>

@@ -10,11 +10,20 @@
 		</v-alert>
 
 		<v-container>
-			<video id="preview">{{ $t('no_source') }}</video>
+			<VideoSource v-bind:stream="stream" v-on:sourceChange="$emit('sourceChange', $event)"></VideoSource>
+			
+			<div class="text-center">
+				<v-btn class="ma-2" tile outlined color="success" @click="$emit('startRecord')" :disabled="!stream || recording">
+					<v-icon left>mdi-record</v-icon> Start
+				</v-btn>
+				<v-btn class="ma-2" tile outlined color="error" @click="$emit('stopRecord')" :disabled="!recording">
+					<v-icon left>mdi-stop</v-icon> Stop
+				</v-btn>
+			</div>
 		</v-container>
 		<v-divider></v-divider>
 		<v-container>
-			<VideoSource></VideoSource>
+			<video id="preview">{{ $t('no_source') }}</video>
 		</v-container>
 	</v-container>
 </template>
@@ -24,6 +33,11 @@ import VideoSource from "@/components/home/VideoSource.vue";
 
 export default {
 	name: 'Home',
+
+	props: {
+		stream: MediaStream,
+		recording: Boolean
+	},
 
 	components: {
 		VideoSource
