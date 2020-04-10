@@ -48,8 +48,18 @@ export default Vue.extend({
 
 	methods: {
 		async selectSource(source: string) {
-			this.constraints.video.mandatory.chromeMediaSourceId = source;
-			this.stream = await navigator.mediaDevices.getUserMedia(this.constraints);
+			let constraints = {}
+			if (source) {
+				this.constraints.video.mandatory.chromeMediaSourceId = source;
+				constraints = this.constraints;
+			} else {
+				constraints = {
+					audio: false,
+					video: true
+				}
+			}
+			
+			this.stream = await navigator.mediaDevices.getUserMedia(constraints);
 		},
 	},
 });

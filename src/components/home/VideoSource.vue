@@ -21,6 +21,11 @@
 					<v-icon x-large>apps</v-icon>
 					<v-list-item-title>{{ $t('video_source_apps') }}</v-list-item-title>
 				</v-list-item>
+
+				<v-list-item @click="sheet = false; $emit('sourceChange', undefined)">
+					<v-icon x-large>camera</v-icon>
+					<v-list-item-title>{{ $t('camera') }}</v-list-item-title>
+				</v-list-item>
 			</v-list>
 		</v-bottom-sheet>
 
@@ -157,11 +162,13 @@ export default {
 {
 	"en": {
 		"video_source": "Select source",
-		"video_source_apps": "Choose an app"
+		"video_source_apps": "Choose an app",
+		"camera": "Camera"
 	},
 	"fr": {
 		"video_source": "Selectionner une source",
-		"video_source_apps": "Choisir une application"
+		"video_source_apps": "Choisir une application",
+		"camera": "Caméra"
 	}
 }
 </i18n>
