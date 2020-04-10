@@ -23,6 +23,11 @@ import Vue from 'vue';
 import Menu from '@/components/nav/Menu.vue';
 import { Dictionary } from 'vue-router/types/router';
 
+interface RecordSettings {
+	source: string;
+	audio: boolean;
+}
+
 export default Vue.extend({
 	name: 'App',
 
@@ -32,7 +37,7 @@ export default Vue.extend({
 
 	data() {
 		return {
-			stream: null,
+			stream: new MediaStream(),
 			recording: false,
 			constraints: {
 				audio: false,
@@ -47,14 +52,15 @@ export default Vue.extend({
 	},
 
 	methods: {
-		async selectSource(source: string) {
+		async selectSource(args: RecordSettings) {
 			let constraints = {}
-			if (source) {
-				this.constraints.video.mandatory.chromeMediaSourceId = source;
+			if (args.source) {
+				this.constraints.audio = args.audio;
+				this.constraints.video.mandatory.chromeMediaSourceId = args.source;
 				constraints = this.constraints;
 			} else {
 				constraints = {
-					audio: false,
+					audio: args.audio,
 					video: true
 				}
 			}

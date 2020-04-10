@@ -10,9 +10,12 @@
 		</v-alert>
 
 		<v-container>
-			<VideoSource v-bind:stream="stream" v-on:sourceChange="$emit('sourceChange', $event)"></VideoSource>
+			<VideoSource v-bind:stream="stream" v-on:sourceChange="$emit('sourceChange', {source: $event, audio: audio})"></VideoSource>
 			
 			<div class="text-center">
+				<v-btn class="ma-2" tile outlined :color="audio ? 'success' : 'error'" @click="audio = !audio">
+					<v-icon left>{{ audio ? "mdi-volume-high" : "mdi-volume-off" }}</v-icon> Audio
+				</v-btn>
 				<v-btn class="ma-2" tile outlined color="success" @click="$emit('startRecord')" :disabled="!stream || recording">
 					<v-icon left>mdi-record</v-icon> Start
 				</v-btn>
@@ -37,6 +40,12 @@ export default {
 	props: {
 		stream: MediaStream,
 		recording: Boolean
+	},
+
+	data() {
+		return {
+			audio: false,
+		}
 	},
 
 	components: {

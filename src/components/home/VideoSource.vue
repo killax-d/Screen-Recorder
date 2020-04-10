@@ -118,8 +118,10 @@ export default {
 		},
 
 		playStream(stream) {
-			this.video.srcObject = stream;
-			this.video.play();
+			if (stream.active) {
+				this.video.srcObject = stream;
+				this.video.play();
+			}
 		}
 	},
 
@@ -131,13 +133,13 @@ export default {
 	},
 
 	watch: { 
-		stream: function(oldStream, newStream) {
+		stream: function(newStream, oldStream) {
 			if (this.video) {
 				if (this.video.srcObject) {
 					this.video.pause();
 				}
-				if (oldStream) {
-					this.playStream(oldStream);
+				if (newStream) {
+					this.playStream(newStream);
 				}
 			}
 		}
