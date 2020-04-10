@@ -8,7 +8,9 @@
 				<router-view 
 					v-bind:recording="recording" 
 					v-bind:stream="stream" 
+					v-bind:audio="constraints.audio"
 					v-on:sourceChange="selectSource($event)"
+					v-on:audioChange="constraints.audio = $event"
 					v-on:startRecord="recording = true"
 					v-on:stopRecord="recording = false"
 				>
@@ -25,7 +27,6 @@ import { Dictionary } from 'vue-router/types/router';
 
 interface RecordSettings {
 	source: string;
-	audio: boolean;
 }
 
 export default Vue.extend({
@@ -55,12 +56,10 @@ export default Vue.extend({
 		async selectSource(args: RecordSettings) {
 			let constraints = {}
 			if (args.source) {
-				this.constraints.audio = args.audio;
 				this.constraints.video.mandatory.chromeMediaSourceId = args.source;
 				constraints = this.constraints;
 			} else {
 				constraints = {
-					audio: args.audio,
 					video: true
 				}
 			}
