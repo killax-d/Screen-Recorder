@@ -13,5 +13,8 @@ new Vue({
   store,
   vuetify,
   i18n,
+  created() {
+    this.$router.push('/');
+  },
   render: h => h(App)
 }).$mount('#app')
