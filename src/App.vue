@@ -10,7 +10,7 @@
 					v-bind:stream="stream" 
 					v-bind:audio="constraints.audio"
 					v-on:sourceChange="selectSource($event)"
-					v-on:audioChange="constraints.audio = $event"
+					v-on:audioChange="updateAudio($event)"
 					v-on:startRecord="startRecording()"
 					v-on:stopRecord="stopRecording()"
 				>
@@ -57,6 +57,7 @@ export default Vue.extend({
 		return {
 			alert: false,
 			stream: new MediaStream(),
+			currentSource: {},
 			nextSource: {},
 			recording: false,
 			force: false,
@@ -90,8 +91,14 @@ export default Vue.extend({
 				}
 			}
 			
+			this.currentSource = args;
 			this.stream = await navigator.mediaDevices.getUserMedia(constraints);
 			this.force = false;
+		},
+		updateAudio(value: boolean) {
+			this.constraints.audio = value;
+			this.force = true;
+			this.selectSource(<RecordSettings> this.currentSource);
 		},
 		startRecording() {
 			this.recording = true;

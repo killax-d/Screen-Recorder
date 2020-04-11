@@ -3,19 +3,21 @@ import VueRouter, { RouteConfig } from 'vue-router'
 import Home from '../views/Home.vue'
 import About from '../views/About.vue';
 import Settings from '../views/Settings.vue';
+import Library from '../views/Library.vue';
 
 Vue.use(VueRouter)
 
 
 const routes: Array<RouteConfig> = [
 	{
-		path: '/',
-		redirect: '/home'
-	},
-	{
 		path: '/home',
 		name: 'Home',
 		component: Home
+	},
+	{
+		path: '/library',
+		name: 'Library',
+		component: Library
 	},
 	{
 		path: '/about',
@@ -26,6 +28,10 @@ const routes: Array<RouteConfig> = [
 		path: '/settings',
 		name: 'Settings',
 		component: Settings
+	},
+	{
+		path: '**',
+		redirect: '/home'
 	}
 ]
 

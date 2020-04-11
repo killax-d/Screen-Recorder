@@ -2,7 +2,13 @@
   <v-navigation-drawer fixed permanent dark mini-variant mini-variant-width="80" :stateless="true">
 		<v-list dense nav>
 
-			<v-list-item :to="{name: 'Home'}" :value="false">
+			<v-list-item :to="{name: 'Home'}">
+				<v-list-item-action>
+					<v-icon x-large>mdi-play</v-icon>
+				</v-list-item-action>
+			</v-list-item>
+
+			<v-list-item :to="{name: 'Library'}">
 				<v-list-item-action>
 					<v-icon x-large>dashboard</v-icon>
 				</v-list-item-action>
