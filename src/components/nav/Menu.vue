@@ -21,7 +21,15 @@
 			</v-list-item>
 
 			<v-container v-if="dialog">
-				<Close v-on:no="dialog=false"></Close>
+				<TwoChoices 
+					v-bind:title="$t('close')"
+					v-bind:message="$t('close_message')"
+					v-bind:a="$t('no')"
+					v-bind:b="$t('yes')"
+					v-on:a="dialog=false"
+					v-on:b="dialog=false, exit()"
+				>
+				</TwoChoices>
 			</v-container>
 
 			<div class="drag"></div>
@@ -32,16 +40,24 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import Close from '@/components/nav/Close.vue';
+import TwoChoices from '@/components/popup/TwoChoices.vue';
 
 export default Vue.extend({
 	name: 'Menu',
 
-	components: { Close },
+	components: { TwoChoices },
 
 	data: () => ({
 		dialog: false,
 	}),
+
+	methods: {
+		exit: () => {
+			const remote = require('electron').remote;
+			const win = remote.getCurrentWindow();
+			win.close();
+		}
+	}
 })
 </script>
 
@@ -57,3 +73,20 @@ export default Vue.extend({
 		-webkit-app-region: drag;
 	}
 </style>
+
+<i18n>
+	{
+		"en": {
+			"close": "Close application",
+			"close_message": "Do you really want to close this app ?",
+			"no": "No",
+			"yes": "Yes"
+		},
+		"fr": {
+			"close": "Fermer l'application",
+			"close_message": "Voulez vous vraiment quitter l'application ?",
+			"no": "Non",
+			"yes": "Oui"
+		}
+	}
+</i18n>
