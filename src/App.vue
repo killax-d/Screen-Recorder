@@ -37,13 +37,17 @@
 <script lang="ts">
 import Vue from 'vue';
 import Menu from '@/components/nav/Menu.vue';
-import { Dictionary } from 'vue-router/types/router';
 
 import ThreeChoices from '@/components/popup/ThreeChoices.vue';
+
+import { writeFileSync } from 'fs';
 
 interface RecordSettings {
 	source: string;
 }
+
+// eslint-disable-next-line
+declare const MediaRecorder: any;
 
 export default Vue.extend({
 	name: 'App',
@@ -55,14 +59,19 @@ export default Vue.extend({
 
 	data() {
 		return {
+			appPath: (require('os').homedir() + "\\ScreenRecorder"),
+			libPath: "\\Records\\",
 			alert: false,
 			stream: new MediaStream(),
-			currentSource: {},
+			mediaRecorder: new MediaRecorder(new MediaStream, {}),
+			// eslint-disable-next-line
+			dataChunks: [] as any,
+			currentSource: {source: ""},
 			nextSource: {},
 			recording: false,
 			force: false,
 			constraints: {
-				audio: false,
+				audio: false as boolean | {},
 				video: {
 					mandatory: {
 						chromeMediaSource: 'desktop',
@@ -81,12 +90,16 @@ export default Vue.extend({
 				return;
 			}
 
-			let constraints = {}
+			let constraints = {audio: false as boolean | {}, video: true as boolean | {}}
 			if (args.source) {
 				this.constraints.video.mandatory.chromeMediaSourceId = args.source;
 				constraints = this.constraints;
+				
+				// Temporary fix issue with audio
+				constraints.audio = false; 
 			} else {
 				constraints = {
+					audio: this.constraints.audio,
 					video: true
 				}
 			}
@@ -94,19 +107,54 @@ export default Vue.extend({
 			this.currentSource = args;
 			this.stream = await navigator.mediaDevices.getUserMedia(constraints);
 			this.force = false;
+		
+			if (this.recording) {
+				await this.stopRecording();
+				this.startRecording();
+			}
 		},
-		updateAudio(value: boolean) {
+		async updateAudio(value: boolean) {
 			this.constraints.audio = value;
 			this.force = true;
-			this.selectSource(<RecordSettings> this.currentSource);
+			await this.selectSource(this.currentSource);
 		},
 		startRecording() {
-			this.recording = true;
+			if (this.stream.active) {
+				const options = { mimeType: 'video/webm; codecs=vp9' };
+				this.mediaRecorder = new MediaRecorder(this.stream, options);
+
+				this.mediaRecorder.ondataavailable = this.handleDataRecord;
+				this.mediaRecorder.onstop = this.handleStopRecording;
+
+				this.mediaRecorder.start();
+				this.recording = true;
+			}
 		},
-		stopRecording() {
+		// eslint-disable-next-line
+		handleDataRecord(event: Record<string, any>) {
+			this.dataChunks.push(event.data);
+		},
+		async stopRecording() {
+			await this.mediaRecorder.stop();
 			this.recording = false;
-		}
-	},
+		},
+		// eslint-disable-next-line
+		async handleStopRecording(event: Record<string, any>) {
+			event;
+			const blob = new Blob(this.dataChunks, {
+				type: 'video/webm; codecs=vp9'
+			});
+
+			const buffer = Buffer.from(await blob.arrayBuffer());
+			
+			const filePath = this.appPath + this.libPath + `vid-${Date.now()}.webm`
+
+			if (filePath) {
+				writeFileSync(filePath, buffer);
+			}
+			this.dataChunks = [];
+		},
+	}
 });
 </script>
 

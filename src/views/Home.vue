@@ -13,7 +13,7 @@
 			<VideoSource v-bind:stream="stream" v-on:sourceChange="$emit('sourceChange', {source: $event})"></VideoSource>
 			
 			<div class="text-center">
-				<v-btn class="ma-2" tile outlined :color="audio ? 'success' : 'error'" @click="$emit('audioChange', !audioEnabled)">
+				<v-btn class="ma-2" tile outlined :color="audio ? 'success' : 'error'" @click="recording ? popup = true : $emit('audioChange', !audioEnabled)">
 					<v-icon left>{{ audio ? "mdi-volume-high" : "mdi-volume-off" }}</v-icon> Audio
 				</v-btn>
 				<v-btn class="ma-2" tile outlined color="success" @click="$emit('startRecord')" :disabled="!stream || recording">
@@ -24,14 +24,28 @@
 				</v-btn>
 			</div>
 		</v-container>
+
 		<v-divider></v-divider>
 		<v-container>
 			<video id="preview">{{ $t('no_source') }}</video>
+		</v-container>
+
+		<v-container v-if="popup">
+			<TwoChoices
+				v-bind:title="$t('audio')"
+				v-bind:message="$t('audio_message')"
+				v-bind:a="$t('cancel')"
+				v-bind:b="$t('ok')"
+				v-on:a="popup = false"
+				v-on:b="popup = false; $emit('audioChange', !audioEnabled)"
+			>
+			</TwoChoices>
 		</v-container>
 	</v-container>
 </template>
 
 <script>
+import TwoChoices from "@/components/popup/TwoChoices.vue";
 import VideoSource from "@/components/home/VideoSource.vue";
 
 export default {
@@ -45,6 +59,7 @@ export default {
 
 	data() {
 		return {
+			popup: false,
 			audioEnabled: this.audio,
 		}
 	},
@@ -56,7 +71,8 @@ export default {
 	},
 
 	components: {
-		VideoSource
+		VideoSource,
+		TwoChoices
 	}
 }
 </script>
@@ -72,11 +88,19 @@ video {
 {
   "en": {
 	"message": "Application is currently in devlopment!",
-	"no_source": "No source selected"
+	"no_source": "No source selected",
+	"audio": "Audio",
+	"audio_message": "Changing audio while recording gonna stop, save and re-run recording",
+	"ok": "Okay",
+	"cancel": "Annuler"
   },
   "fr": {
 	"message": "L'application est actuellement en développement!",
-	"no_source": "Aucune source définie"
+	"no_source": "Aucune source définie",
+	"audio": "Audio",
+	"audio_message": "Changer l'audio pendant l'enregistrement va l'arrêter, le sauvegarde et redémarrer",
+	"ok": "Ok",
+	"cancel": "Annuler"
   }
 }
 </i18n>

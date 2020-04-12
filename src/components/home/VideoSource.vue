@@ -71,9 +71,7 @@
 </template>
 
 <script>
-import { desktopCapturer, remote } from 'electron';
-
-import { writeFile } from 'fs';
+import { desktopCapturer } from 'electron';
 
 export default {
 	name: "VideoSource",

@@ -5,6 +5,8 @@ import {
   createProtocol,
   /* installVueDevtools */
 } from 'vue-cli-plugin-electron-builder/lib'
+import { mkdir, existsSync } from 'fs';
+
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -100,4 +102,17 @@ if (isDevelopment) {
       app.quit()
     })
   }
+}
+
+const appPath = require('os').homedir() + "\\ScreenRecorder";
+const libPath = appPath + "\\Records";
+
+if (!existsSync(appPath)) {
+  mkdir(appPath, () => {
+    if (!existsSync(libPath)) {
+      mkdir(libPath, () => {
+        console.log("Created Library path")
+      });
+    }
+  });
 }
