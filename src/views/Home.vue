@@ -92,13 +92,13 @@ video {
 	"audio": "Audio",
 	"audio_message": "Changing audio while recording gonna stop, save and re-run recording",
 	"ok": "Okay",
-	"cancel": "Annuler"
+	"cancel": "Cancel"
   },
   "fr": {
 	"message": "L'application est actuellement en développement!",
 	"no_source": "Aucune source définie",
 	"audio": "Audio",
-	"audio_message": "Changer l'audio pendant l'enregistrement va l'arrêter, le sauvegarde et redémarrer",
+	"audio_message": "Changer l'audio pendant l'enregistrement va l'arrêter, le sauvegarder et redémarrer",
 	"ok": "Ok",
 	"cancel": "Annuler"
   }
